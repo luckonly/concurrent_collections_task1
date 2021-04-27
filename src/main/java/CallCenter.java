@@ -3,8 +3,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class CallCenter implements Runnable {
 
     private ConcurrentLinkedQueue<Call> callsQueue;
-    private static long TIME_TO_ANSWER = 1000L;
-    private static long TIME_BETWEEN_CALLS = 1000L;
+    private static final long TIME_TO_ANSWER = 1000L;
+    private static final long TIME_BETWEEN_CALLS = 1000L;
     private static int callQuantity = 60;
     private static int callCenterWorkingHours = 5;
 
@@ -42,12 +42,18 @@ public class CallCenter implements Runnable {
 
             Thread.sleep(TIME_TO_ANSWER);
 
-            while (!callsQueue.isEmpty()) {
+            while (true)  {
 
-                Thread.sleep(TIME_TO_ANSWER);
+                Call call = callsQueue.poll();
 
-                System.out.println(Thread.currentThread().getName()
-                        + " обрабатывает вызов " + callsQueue.poll());
+                if (call != null) {
+                    Thread.sleep(TIME_TO_ANSWER);
+
+                    System.out.println(Thread.currentThread().getName()
+                            + " обрабатывает вызов " + call);
+                } else {
+                    break;
+                }
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
